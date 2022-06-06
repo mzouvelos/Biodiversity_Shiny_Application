@@ -31,7 +31,7 @@ hchart_year_observations <- function(hchart_data) {
 }
 
 # pop_up text label - leaflet map
-popup_lf <- function(scientificName, vernacularName, family, kingdom, lifeStage, sex, individualCount, eventDate, coordinateUncertaintyInMeters, references){
+popup_lf <- function(obs_image, scientificName, vernacularName, family, kingdom, lifeStage, sex, individualCount, eventDate, coordinateUncertaintyInMeters, references){
   glue::glue(
     "
     <style>
@@ -40,6 +40,7 @@ popup_lf <- function(scientificName, vernacularName, family, kingdom, lifeStage,
     </style>
     <div class='popup-content'>
       <h3 class = 't-title'>{ str_to_title(scientificName) } / {str_to_title(vernacularName)}</h3>
+      <center><img src='{ obs_image }' alt = '' style='border-radius: 11% 50% 11% 50% / 11% 50% 11% 50% ;height:90px;'></center>
       <p><b>Family: </b> { family } </p>
       <p><b>Kingdom: </b> { kingdom } </p>
       <p><b>Life Stage: </b> { lifeStage }  </p>
@@ -81,7 +82,7 @@ poland <- readr::read_csv("Poland.csv")
 poland <- poland %>% 
   subset(select = -c(stateProvince, recordedBy, previousIdentifications, habitat, eventID, behavior, associatedTaxa, 
                      dataGeneralizations, samplingProtocol, id, catalogNumber, basisOfRecord, collectionCode, higherClassification, previousIdentifications, 
-                     geodeticDatum, continent, eventTime, rightsHolder, license, country, countryCode))
+                     geodeticDatum, continent, eventTime, rightsHolder, license, country, countryCode, taxonRank, locality, modified))
 
 # Tidy the family column string for the label
 poland$family <- str_to_title(poland$family) 
@@ -90,12 +91,14 @@ poland$family <- gsub("_", " ", poland$family, fixed = TRUE)
 # rename latitude and longitude columns
 poland <- poland %>% 
   dplyr::rename(latitude = latitudeDecimal, longitude = longitudeDecimal) %>% 
-  mutate(popup_label = popup_lf(scientificName, vernacularName, family, kingdom, lifeStage, sex, individualCount, eventDate, coordinateUncertaintyInMeters, references))
+  mutate(popup_label = popup_lf(obs_image, scientificName, vernacularName, family, kingdom, lifeStage, sex, individualCount, eventDate, coordinateUncertaintyInMeters, references))
 
-groups = unique(poland$sex)
+
+
 #############################################################################################################
 # Modules
 
+#############################################################################################################
 # UI def ----------------------------------------------------------------------------------------------------
 
 species_mod_UI <- function(id) {
@@ -128,7 +131,7 @@ species_mod_UI <- function(id) {
     
   )
 }
-
+###################################################################################################
 # Server log --------------------------------------------------------------------------------------
 
 species_mod_filter <- function(input, output, session) {

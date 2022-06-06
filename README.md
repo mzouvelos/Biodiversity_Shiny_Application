@@ -21,6 +21,10 @@ was large and then only the data for Poland were extracted into a distinct csv f
 
 The code used to load the data is located: [here](https://github.com/mzouvelos/Poland_biodiversity_appsilon/blob/main/R/Load.R)
 
+For the images which are displayed on the popup label rvest package was used to scrape the relevant 
+images url's from the observations website if the observer provided an image along with their report.
+
+The code used to scrape the images is located: [here]()
 
 The map was created using the leaflet package and highcharter for the graphs.
 
