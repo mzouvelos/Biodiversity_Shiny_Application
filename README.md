@@ -18,8 +18,10 @@ The app allows the user to type or select a species by their name (either scient
 
 The data were loaded using a Spark database connection since the initial file with data for the whole world
 was large and then only the data for Poland were extracted into a distinct csv file.
+
 The code used to load the data is located: [here](https://github.com/mzouvelos/Poland_biodiversity_appsilon/blob/main/R/Load.R)
 
 
 The map was created using the leaflet package and highcharter for the graphs.
+
 The code used to create the app is located: [here](https://github.com/mzouvelos/Poland_biodiversity_appsilon/blob/main/R/app.R)
