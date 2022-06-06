@@ -12,6 +12,8 @@ library(stringr)
 library(glue)
 library(xts)
 
+library(shinydashboard)
+library(shinyjqui)
 
 #############################################################################################################
 # General Functions -------------------------------------------------------------------------------------------------
@@ -53,11 +55,22 @@ popup_lf <- function(scientificName, vernacularName, family, kingdom, lifeStage,
   )
 }
 
-# user message - open/default
+# user message - app initial popup
 message = function(message) {
   showModal(modalDialog(title = "Welcome to Poland Biodiversity map!",                                      # Opening message
-                        tags$p("In this page you can explore different species that exist in Poland."),
-                        tags$p("Please select a species to explore by using the filter on the left side!")))
+                        tags$p("On this page, you can explore different species that exist in Poland."),
+                        HTML('<img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/GBIF-2015-full-stacked.png">'),
+                        tags$p(HTML("<b>App info - How to use</b>")),
+                        tags$p(HTML("The app allows the user to type or select a species by their name (either scientific or vernacular) and displays: <br>
+                               <li> All of the reported observations with their location on the map</li>
+                               <li> A bar chart with the total yearly observations of the selected species</li>
+                               <li> A timeline graph of the number of recorded observations for each day they occured, with the exact date of the observations</li>
+                               <li> Extended information regarding each observation with a popup label window when the user selects one of the pinned observations on the map
+                               timeline graph of the number of recorded observations for each day they occurred, displaying the exact date of the observations.</li>")),
+                        tags$p(HTML("<em>We have selected a random species for you to get you started.</em>")),
+                        tags$p(HTML("<b>Please select the species you want to explore by using the filter on the left side of your screen!</b>")),
+                        footer = modalButton("Start Exploring!"))
+  )
 }
 
 
@@ -91,47 +104,42 @@ groups = unique(poland$sex)
 species_mod_UI <- function(id) {
   ns <- NS(id)
   
+  tags$head(
+    tags$link(href = "https://fonts.googleapis.com/css?family=Oswald", rel = "stylesheet"),
+    tags$style(type = "text/css", "html, body {width:100%;height:100%; font-family: Oswald, sans-serif;}"),
     
-    tags$head(
-      tags$link(href = "https://fonts.googleapis.com/css?family=Oswald", rel = "stylesheet"),
-      tags$style(type = "text/css", "html, body {width:100%;height:100%; font-family: Oswald, sans-serif;}"),
-      
-      leafletOutput(ns("map"), width = "100%", height = "100%"),
-      
-      absolutePanel(
-        top = 10, right = 10 ,style = "z-index:500; text-align: right; min-width: 300px;",
-        tags$h2("Biodiversity in Poland"),
-        tags$a("Data Source", href="https://www.gbif.org/occurrence/search?dataset_key=8a863029-f435-446a-821e-275f4f641165"), # hyperlink to the data source GBIF
-        highchartOutput(ns("timeline"))
+    leafletOutput(ns("map"), width = "100%", height = "100%"),
+    
+    absolutePanel(
+      top = 10, right = 10 ,style = "z-index:500; text-align: right; min-width: 300px;",
+      tags$h2("Biodiversity in Poland"),
+      tags$a("Data Source", href="https://www.gbif.org/occurrence/search?dataset_key=8a863029-f435-446a-821e-275f4f641165"), # hyperlink to the data source GBIF
+      highchartOutput(ns("timeline"))
+    ),
+    
+    absolutePanel(
+      top = 100, left = 10, width = "20%", style = "z-index:500; min-width: 300px;",
+      pickerInput(ns("species"), label = "Type or select a species name (Vernacular or Scientific)", 
+                  choices = list(
+                    `Vernacular Name` = sort(unique(poland$vernacularName)),
+                    `Scientific Name` = sort(unique(poland$scientificName))),
+                  options=pickerOptions(liveSearch=T) , 
+                  selected = sample(c(poland$vernacularName, poland$scientificName), 1, replace = TRUE)  # initial select random sample
       ),
-      
-      absolutePanel(
-        top = 100, left = 10, width = "20%", style = "z-index:500; min-width: 300px;",
-        pickerInput(ns("species"), label = "Type or select a species name (Vernacular or Scientific)", 
-                    choices = list("",
-                                   `Vernacular Name` = sort(unique(poland$vernacularName)),
-                                   `Scientific Name` = sort(unique(poland$scientificName))),
-                    options=pickerOptions(liveSearch=T)
-        ),
-        highchartOutput(ns("occurences"))),
-      
-      
-    )
+      highchartOutput(ns("occurences")))
+    
+    
+  )
 }
 ###################################################################################################
 # Server log --------------------------------------------------------------------------------------
 
 species_mod_filter <- function(input, output, session) {
   
+  message() # app opening message
   
   filteredData <- reactive({
-    if (input$species == "") {
-      validate(
-        need(input$species, "Please select a species to explore"),
-        message("")) # message
-    } else {
-      filter(poland, scientificName == input$species | vernacularName == input$species)
-    }
+    shiny::req(filter(poland, scientificName == input$species | vernacularName == input$species)) # reactive - filter
   })
   
   
@@ -179,8 +187,8 @@ species_mod_filter <- function(input, output, session) {
   
   
   
-  }
-  
+}
+
 #############################################################################################################
 # UI --------------------------------------------------------------------------------------------------------
 ui <- bootstrapPage(
@@ -194,9 +202,10 @@ server <- function(input, output, session) {
   
   callModule(species_mod_filter, "filter")
   
-
+  
 }
 
 
 ###########################################################################################################
 shinyApp(ui, server)
+
