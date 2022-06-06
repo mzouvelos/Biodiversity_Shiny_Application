@@ -2,7 +2,7 @@
 
 - **About the app**
 
-Shiny Application for Appsilon interview. The app is available at:
+Shiny Application for Appsilon interview. The app is available at: https://michalis-zouvelos.shinyapps.io/Poland_Biodiversity/
 
 The application uses biodiversity data from [GBIF organization](https://www.gbif.org/occurrence/search?dataset_key=8a863029-f435-446a-821e-275f4f641165)
 The app let the user explore the biodiversity of Poland and the observation occurrences of the species.
