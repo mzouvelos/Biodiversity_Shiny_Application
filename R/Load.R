@@ -28,7 +28,7 @@ Poland_tbl <- occurence_tbl %>% filter(country == "Poland") # Filter only the da
 
 Poland_csv <- sdf_coalesce(Poland_tbl, 1) # re partition all the data so that they do not split to multiple when writing the csv file
 
-spark_write_csv(Poland_csv, "~/Poland") # write one csv file with all the data about Poland
+spark_write_csv(Poland_csv, "C:/Users/micha/Desktop/Projects/Appsilon Interview/Poland") # write one csv file with all the data about Poland
 
 # Terminate spark connection
 spark_disconnect(sc)

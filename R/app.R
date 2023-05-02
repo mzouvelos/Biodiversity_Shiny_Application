@@ -1,6 +1,5 @@
 #
-# Shiny application for Appsilon - Michalis Zouvelos (June - 2022)
-#
+# Shiny application Example - Michalis Zouvelos 
 #############################################################################################################
 # Libraries -------------------------------------------------------------------------------------------------
 library(shiny)

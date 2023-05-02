@@ -2,10 +2,10 @@
 
 - **About the app**
 
-Shiny Application for Appsilon interview. The app is available at: https://michalis-zouvelos.shinyapps.io/Poland_Biodiversity/
+Shiny Application Example. The app is available at: https://michalis-zouvelos.shinyapps.io/Poland_Biodiversity/
 
 The application uses biodiversity data from [GBIF organization](https://www.gbif.org/occurrence/search?dataset_key=8a863029-f435-446a-821e-275f4f641165)
-The app let the user explore the biodiversity of Poland and the observation occurrences of the species.
+The app lets the user explore the biodiversity of Poland and the observation occurrences of the species.
 
 ![App Image](app_image_new.png)
 
@@ -16,16 +16,16 @@ The app allows the user to type or select a species by their name (either scient
 
 - **Creating the app**
 
-The data were loaded using a Spark database connection since the initial file with data for the whole world
+The data were loaded using a Spark cluster database connection since the initial file with data for the whole world
 was large and then only the data for Poland were extracted into a distinct csv file.
 
-The code used to load the data is located: [here](https://github.com/mzouvelos/Poland_biodiversity_appsilon/blob/main/R/Load.R)
+The code used to load the data is located: [here](https://github.com/mzouvelos/Biodiversity_Shiny_Application/blob/main/R/Load.R)
 
 For the images which are displayed on the popup label rvest package was used to scrape the relevant 
 images url's from the observations website if the observer provided an image along with their report.
 
-The code used to scrape the images is located: [here](https://github.com/mzouvelos/Poland_biodiversity_appsilon/blob/main/R/Image_scraper.R)
+The code used to scrape the images is located: [here](https://github.com/mzouvelos/Biodiversity_Shiny_Application/blob/main/R/Image_scraper.R)
 
 The map was created using the leaflet package and highcharter for the graphs.
 
-The code used to create the app is located: [here](https://github.com/mzouvelos/Poland_biodiversity_appsilon/blob/main/R/app.R)
+The code used to create the app is located: [here](https://github.com/mzouvelos/Biodiversity_Shiny_Application/blob/main/R/app.R)
